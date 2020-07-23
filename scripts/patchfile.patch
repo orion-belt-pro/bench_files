@@ -1,0 +1,56 @@
+--- vpp_upf/src/vlib/trace.c	2020-06-17 18:58:05.785707884 +0000
++++ ../upf/src/vlib/trace.c	2020-07-23 10:43:47.699923000 +0000
+@@ -39,6 +39,9 @@
+ 
+ #include <vlib/vlib.h>
+ #include <vlib/threads.h>
++#include <stdio.h>
++
++
+ 
+ u8 *vnet_trace_dummy;
+ 
+@@ -139,7 +142,9 @@
+   vlib_trace_header_t *e = vec_end (h);
+   vlib_node_t *node, *prev_node;
+   clib_time_t *ct = &vm->clib_time;
+-  f64 t;
++  f64 t, start, end, diff;
++  FILE * fp;
++  fp = fopen ("trace_log.txt","w");
+ 
+   prev_node = 0;
+   while (h < e)
+@@ -150,20 +155,29 @@
+ 	{
+ 	  t =
+ 	    (h->time - vm->cpu_time_main_loop_start) * ct->seconds_per_clock;
++      end = t;
+ 	  s =
+ 	    format (s, "\n%U: %v", format_time_interval, "h:m:s:u", t,
+ 		    node->name);
+-	}
+-      prev_node = node;
++        
++        if (prev_node == 0){
++          start = t;}
++        if (vlib_trace_header_next (h) == e){
++          diff = end-start;
++	        format (s, "\n Packet processed  in  %U: sec, %v ", format_time_interval, "h:m:s:u", end-start, node->name);}
+ 
++      prev_node = node;
+       if (node->format_trace)
+ 	s = format (s, "\n  %U", node->format_trace, vm, node, h->data);
+       else
+ 	s = format (s, "\n  %U", node->format_buffer, h->data);
+-
++      
+       h = vlib_trace_header_next (h);
++        }
+     }
+ 
++  fprintf (fp, "Packets traced %s\n",s);
++  fclose (fp);
+   return s;
+ }
+ 
