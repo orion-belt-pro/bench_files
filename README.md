@@ -1,7 +1,1 @@
-├── logs                                                                                                                                                                                                                                    
-│   └── latency                                                                                                                                                                                                                             
-│       ├── 1_latency_ref_uplink.txt                                                                                                                                                                                                        
-│       └── 2_latency_var_flow_uplink.txt                                                                                                                                                                                                   
-├── README.md                                                                                                                                                                                                                               
-└── scripts                                                                                                                                                                                                                                 
-    └── timestamp_on_traces.patch
+
