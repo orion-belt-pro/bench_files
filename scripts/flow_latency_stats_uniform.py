@@ -7,7 +7,6 @@ from scapy.contrib.gtp import *
 from trex_stl_lib.api import *
 import csv
 
-
 def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
     # create client
     c = STLClient()
@@ -18,15 +17,15 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
 #	uplink gtp packet
         pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.105")/UDP(dport=2152)/GTP_U_Header(teid=1234)/IP(src="10.10.10.10",dst="172.20.16.55",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
 #       downlink packet 
-#       pkt = Ether()/IP(src="172.20.16.55",dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed' 
+#        pkt = Ether()/IP(src="172.20.16.55",dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed' 
         total_pkts = burst_size
 
-        print("Length of the packet",len(pkt))
-        pkt /= 'x' * packet_len
-        print("Length of the packet",len(pkt))
+#        print("Length of the packet",len(pkt))
+#        pkt /= 'x' * packet_len
+#        print("Length of the packet",len(pkt))
 	packet = STLPktBuilder(pkt =pkt, vm= vm)
 
-	
+	"""	
 #      Test 1 : Fixed paacket size
 #      Test 2 : Varying packet size (fixed per test)
         s1 = STLStream(name = 'stram1',
@@ -36,38 +35,42 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
                        mode = STLTXCont(pps=pps)) 
 #                        mode = STLTXSingleBurst(total_pkts = total_pkts,
 #                                              pps = pps))    
-
-	
 	"""
+	
+
 #      Test 3 : Varying packet size (distribution)
         s1 = STLStream(name = 'stram1',
                        packet = packet,
                        flow_stats = STLFlowLatencyStats(pg_id = 5),
-#                       mode = STLTXCont(pps=pps))
-                       mode = STLTXCont(pps=200))
+                       mode = STLTXCont(pps=pps*0.2))
+#                       mode = STLTXMultiBurst(pps=200, pkts_per_burst =200, count = 50000))
 #                      mode = STLTXSingleBurst(total_pkts = total_pkts,
 #                                              pps = pps))
 
+        print("S1: Length of the packet",len(pkt))
 
-        pkt /= 'x' * 934  
+        pkt /= 'x' * 914
         packet = STLPktBuilder(pkt =pkt, vm= vm)
         s2 = STLStream(name = 'stream2',
                        packet = packet,
                        flow_stats = STLFlowLatencyStats(pg_id = 6),
-                       mode = STLTXCont(pps=600))
+                       mode = STLTXCont(pps=pps*0.6))
+#                       mode = STLTXMultiBurst(pps=600, pkts_per_burst  = 600, count  = 50000))
 #                      mode = STLTXSingleBurst(total_pkts = total_pkts,
 #                                              pps = pps))
+        print("S2: Length of the packet",len(pkt))
 
-        pkt /= 'x' * 1436
+
+        pkt /= 'x' * 512
         packet = STLPktBuilder(pkt =pkt, vm= vm)
         s3 = STLStream(name = 'stream3',
                        packet = packet,
                        flow_stats = STLFlowLatencyStats(pg_id = 7),
-                       mode = STLTXCont(pps=200))
+                       mode = STLTXCont(pps=pps*0.2))
 #                      mode = STLTXSingleBurst(total_pkts = total_pkts,
 #                                              pps = pps))
+        print("S3: Length of the packet",len(pkt))
 
-	"""
 	"""
 #      Test 4 : Varying packet flow (distribution)
         vm = STLScVmRaw( [ STLVmFlowVar(name="ip_dst",
@@ -92,10 +95,10 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
         # prepare our ports
         c.reset(ports = [tx_port, rx_port])
         # add streams to ports
-        c.add_streams([s1], ports = [tx_port])
-#        c.add_streams([s1, s2, s3], ports = [tx_port])
+#        c.add_streams([s1], ports = [tx_port])
+        c.add_streams([s1, s2, s3], ports = [tx_port])
         print("\nInjecting packets \n")
-        print("Length of the packet", packet.get_pkt_len())
+        print("All strams: Length of the packet", packet.get_pkt_len())
         rc = rx_iteration(c, tx_port, rx_port, total_pkts, packet.get_pkt_len())
         if not rc:
             passed = False
@@ -138,7 +141,7 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
 	tx_pps_list.append(tx_pps)
         rx_pps_list.append(rx_pps)
 
-    throughput = Average(rx_pps_list)*pkt_len*8*0.000001
+    throughput = Average(rx_pps_list)*110*8*0.000001
     print("tx_pps_avg:{0}, rx_pps_avg:{1}, Average throughput:{2} Mbps".format(Average(tx_pps_list), Average(rx_pps_list), round(throughput,4) ));
 #    print("tx_pps_avg:{0}, rx_pps_avg:{1}".format(Average(tx_pps_list), Average(rx_pps_list))3
     c.wait_on_traffic(ports = [rx_port])
@@ -171,20 +174,41 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
     last_max = lat['last_max']
     hist = lat ['histogram']
 
-    with open("latency.csv", "a") as f:    
+
+    lat_stats_s1 = global_lat_stats.get(5)      
+    lat_s1=lat_stats_s1['latency']['average']    
+    lat_stats_s2 = global_lat_stats.get(6) 
+    lat_s2=lat_stats_s2['latency']['average']
+    lat_stats_s3 = global_lat_stats.get(7) 
+    lat_s3=lat_stats_s3['latency']['average']
+ 
+    with open("/home/rohan/bench/bench_files/logs/latency/latency.csv", "a") as f:    
+        rows   = [[lat_s1],[lat_s2],[lat_s3]] 
     	writer = csv.writer(f)
-        writer.writerow([avg])
+#        writer.writerow([avg])
+        writer.writerow(rows)
         f.close()
 
+    flow_stats_s1 = stats['flow_stats'].get(5)
+    rx_pps_s1 = flow_stats_s1['rx_pps'][rx_port]
+    tput_s1= round(rx_pps_s1*110*8*0.000001,4)
+    flow_stats_s2 = stats['flow_stats'].get(6)
+    rx_pps_s2 = flow_stats_s2['rx_pps'][rx_port]
+    tput_s2= round(rx_pps_s2*1024*8*0.000001,4)
+    flow_stats_s3 = stats['flow_stats'].get(7)
+    rx_pps_s3 = flow_stats_s3['rx_pps'][rx_port]
+    tput_s3= round(rx_pps_s3*1536*8*0.000001,4)
 
-    with open("throughput.csv", "a") as f:
+
+    with open("/home/rohan/bench/bench_files/logs/throughput/throughput.csv", "a") as f:
+        rows   = [[tput_s1],[tput_s2],[tput_s3]]
         writer = csv.writer(f)
         fields = ['tx_pps_avg', 'rx_pps_avg']
 #        rows   = [[Average(tx_pps_list)], [Average(rx_pps_list)], [throughput]]
 #        rows   = [[throughput]]
 #        writer.writerow(fields) 
-#        writer.writerow(rows)
-        writer.writerow([round(throughput,4)]) 
+        writer.writerow(rows)
+#        writer.writerow([round(throughput,4)]) 
         f.close()
 
     if c.get_warnings():
@@ -222,5 +246,11 @@ i=0
 packet_len = 1
 while(i<51):
         print("Iteration :- ", i)
-	rx_example(tx_port = 0, rx_port = 1, burst_size = 1000, pps = 100000, packet_len = 1000)
+	rx_example(tx_port = 0, rx_port = 1, burst_size = 1000, pps = 1000, packet_len = 914)
         i+=1
+
+
+
+
+
+                                                                                                                                                                   
