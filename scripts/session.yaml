@@ -1,0 +1,46 @@
+messages:
+  - messageType: SessionEstablishmentRequest
+    messageParams:
+      seid: 0
+      pdrs:
+      - pdrID: 0
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 0.0.0.0/0  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 1
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 0.0.0.0/0  to assigned'
+        farID: 13
+      fars:
+      - farID: 12
+        applyAction: Forward
+        forwardingParameters:
+          destinationInterface: SGiLAN
+          networkInstance: sgi
+      - farID: 13
+        applyAction: Forward
+        forwardingParameters:
+          destinationInterface: Access
+          networkInstance: access
+          outerHeaderCreation:
+            desc: OUTER_HEADER_CREATION_GTPU_UDP_IPV4
+            teid: 4321
+            ip: 172.20.16.99
