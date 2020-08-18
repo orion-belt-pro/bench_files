@@ -1,0 +1,1320 @@
+messages:
+  - messageType: SessionEstablishmentRequest
+    messageParams:
+      seid: 0
+      pdrs:
+      - pdrID: 0
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.1/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 1
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.1/32  to assigned'
+        farID: 13
+      - pdrID: 2
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.2/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 3
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.2/32  to assigned'
+        farID: 13
+      - pdrID: 4
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.3/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 5
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.3/32  to assigned'
+        farID: 13
+      - pdrID: 6
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.4/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 7
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.4/32  to assigned'
+        farID: 13
+      - pdrID: 8
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.5/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 9
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.5/32  to assigned'
+        farID: 13
+      - pdrID: 10
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.6/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 11
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.6/32  to assigned'
+        farID: 13
+      - pdrID: 12
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.7/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 13
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.7/32  to assigned'
+        farID: 13
+      - pdrID: 14
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.8/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 15
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.8/32  to assigned'
+        farID: 13
+      - pdrID: 16
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.9/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 17
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.9/32  to assigned'
+        farID: 13
+      - pdrID: 18
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.10/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 19
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.10/32  to assigned'
+        farID: 13
+      - pdrID: 20
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.11/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 21
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.11/32  to assigned'
+        farID: 13
+      - pdrID: 22
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.12/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 23
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.12/32  to assigned'
+        farID: 13
+      - pdrID: 24
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.13/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 25
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.13/32  to assigned'
+        farID: 13
+      - pdrID: 26
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.14/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 27
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.14/32  to assigned'
+        farID: 13
+      - pdrID: 28
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.15/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 29
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.15/32  to assigned'
+        farID: 13
+      - pdrID: 30
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.16/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 31
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.16/32  to assigned'
+        farID: 13
+      - pdrID: 32
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.17/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 33
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.17/32  to assigned'
+        farID: 13
+      - pdrID: 34
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.18/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 35
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.18/32  to assigned'
+        farID: 13
+      - pdrID: 36
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.19/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 37
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.19/32  to assigned'
+        farID: 13
+      - pdrID: 38
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.20/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 39
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.20/32  to assigned'
+        farID: 13
+      - pdrID: 40
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.21/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 41
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.21/32  to assigned'
+        farID: 13
+      - pdrID: 42
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.22/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 43
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.22/32  to assigned'
+        farID: 13
+      - pdrID: 44
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.23/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 45
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.23/32  to assigned'
+        farID: 13
+      - pdrID: 46
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.24/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 47
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.24/32  to assigned'
+        farID: 13
+      - pdrID: 48
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.25/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 49
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.25/32  to assigned'
+        farID: 13
+      - pdrID: 50
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.26/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 51
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.26/32  to assigned'
+        farID: 13
+      - pdrID: 52
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.27/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 53
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.27/32  to assigned'
+        farID: 13
+      - pdrID: 54
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.28/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 55
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.28/32  to assigned'
+        farID: 13
+      - pdrID: 56
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.29/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 57
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.29/32  to assigned'
+        farID: 13
+      - pdrID: 58
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.30/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 59
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.30/32  to assigned'
+        farID: 13  
+      - pdrID: 60
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.31/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 61
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.31/32  to assigned'
+        farID: 13
+      - pdrID: 62
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.32/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 63
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.32/32  to assigned'
+        farID: 13
+      - pdrID: 64
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.33/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 65
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.33/32  to assigned'
+        farID: 13
+      - pdrID: 66
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.34/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 67
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.34/32  to assigned'
+        farID: 13
+      - pdrID: 68
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.35/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 69
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.35/32  to assigned'
+        farID: 13
+      - pdrID: 70
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.36/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 71
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.36/32  to assigned'
+        farID: 13
+      - pdrID: 72
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.37/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 73
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.37/32  to assigned'
+        farID: 13
+      - pdrID: 74
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.38/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 75
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.38/32  to assigned'
+        farID: 13
+      - pdrID: 76
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.39/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 77
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.39/32  to assigned'
+        farID: 13
+      - pdrID: 78
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.40/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 79
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.40/32  to assigned'
+        farID: 13
+      - pdrID: 80
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.41/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 81
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.41/32  to assigned'
+        farID: 13
+      - pdrID: 82
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.42/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 83
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.42/32  to assigned'
+        farID: 13
+      - pdrID: 84
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.43/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 85
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.43/32  to assigned'
+        farID: 13
+      - pdrID: 86
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.44/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 87
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.44/32  to assigned'
+        farID: 13
+      - pdrID: 88
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.45/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 89
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.45/32  to assigned'
+        farID: 13
+      - pdrID: 90
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.46/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 91
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.46/32  to assigned'
+        farID: 13
+      - pdrID: 92
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.47/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 93
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.47/32  to assigned'
+        farID: 13
+      - pdrID: 94
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.48/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 95
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.48/32  to assigned'
+        farID: 13
+      - pdrID: 96
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.49/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 97
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.49/32  to assigned'
+        farID: 13
+      - pdrID: 98
+        precedence: 1
+        pdi:
+          sourceInterface: Access
+          networkInstance: access
+          localFTEID:
+            teid: 1234
+            ip4: 172.20.16.105
+          ueIPAddress:
+            isDestination: false
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.50/32  to assigned'
+        outerHeaderRemoval: OUTER_HEADER_GTPU_UDP_IPV4
+        farID: 12
+      - pdrID: 99
+        precedence: 1
+        pdi:
+          sourceInterface: SGiLAN
+          networkInstance: sgi
+          ueIPAddress:
+            isDestination: true
+            ip4: 10.10.10.10
+          sdfFilter:
+            flowDescription: 'permit out ip from 8.8.8.50/32  to assigned'
+        farID: 13
+      fars:
+      - farID: 12
+        applyAction: Forward
+        forwardingParameters:
+          destinationInterface: SGiLAN
+          networkInstance: sgi
+      - farID: 13
+        applyAction: Forward
+        forwardingParameters:
+          destinationInterface: Access
+          networkInstance: access
+          outerHeaderCreation:
+            desc: OUTER_HEADER_CREATION_GTPU_UDP_IPV4
+            teid: 4321
+            ip: 172.20.16.99
