@@ -18,13 +18,13 @@ pps = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
 pkt_size_dist = [100, 1024, 1536]
 
 ########	Test4: var_flow = Varying flow (Fixed per test)
-flows = [10, 20, 30, 40, 50]
+flows = [20, 30, 40, 50]
 
 ########	Test5: var_flow_dist = Varying flow
-flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
+#flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
 
-########        Test5: var_flow_dist = Varying flow
-flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
+########        Test5: LBO
+#flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
 
 ########       Direction = uplink or downlink
 
@@ -45,9 +45,13 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
                            STLVmFixIpv4(offset = "IP"),
                            ])
 
+	max_value="8.8.8.10"
+	if test =="var_flow":
+		max_value="8.8.8."+str(var)
+	print"Value of max value",max_value
         vm_dst = STLScVmRaw([STLVmFlowVar(name="ip_dst",
                            min_value="8.8.8.1",
-                           max_value="8.8.8.10",
+                           max_value=max_value,
                          size=4, op="inc"),
                            STLVmWrFlowVar(fv_name="ip_dst", pkt_offset= "IP:1.dst"),
                            STLVmFixIpv4(offset = "IP:1"),
@@ -75,7 +79,7 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
 		pkt /= 'x' * (var-len(pkt))
 		print("Length of the packet after padding",len(pkt))
 		packet = STLPktBuilder(pkt =pkt, vm = vm)
-		print " ##### Test 1 : Varying packet size (fixed per test) #####"
+		print "##### Test 1 : Varying packet size (fixed per test)#####"
         	s1 = STLStream(name = 'stram1',
                 		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 5),
@@ -116,7 +120,7 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
 		pkt /= 'x' * 914
 		print("Length of the packet after padding",len(pkt))
 		packet = STLPktBuilder(pkt =pkt, vm = vm)
-		print " #####  Test3 = Varying pps (Fixed per test)   #####"
+		print "#####  Test3 = Varying pps (Fixed per test)#####"
                 s1 = STLStream(name = 'stram1',
                                 packet = packet,
                                 flow_stats = STLFlowLatencyStats(pg_id = 5),
@@ -126,23 +130,18 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
 ##############################################
 	if test == "var_flow":
 	        print "Number of flows", var
-		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions)") 
-		if cont == "yes":
-			pkt /= 'x' * 914
-			print("Length of the packet after padding",len(pkt))
-			print "#####  Test3 = Varying flow (Fixed per test)#####"
-			packet = STLPktBuilder(pkt =pkt, vm = vm)
-	"""
-#       Test 4 : Varying packet flow (distribution)
-	pkt /= 'x' * packet_len
-        packet = STLPktBuilder(pkt =pkt, vm = vm)
-        s4 = STLStream(name = 'stram4',
-                       packet = packet,
-                       flow_stats = STLFlowLatencyStats(pg_id =  5),
-                       mode = STLTXCont(pps=pps))
-#                      mode = STLTXSingleBurst(total_pkts = total_pkts,
-#                                              pps = pps))
-	"""
+#		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions)") 
+#		if cont == "yes":
+		pkt /= 'x' * 914
+		print("Length of the packet after padding",len(pkt))
+		print "#####  Test3 = Varying flow (Fixed per test)#####"
+		packet = STLPktBuilder(pkt =pkt, vm = vm)
+                s4 = STLStream(name = 'stram4',
+                               packet = packet,
+                               flow_stats = STLFlowLatencyStats(pg_id =  5),
+                               mode = STLTXCont(pps=pps))
+		streams = [s4]
+##############################################
 
         # connect to server
         c.connect()
@@ -181,8 +180,6 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
     time.sleep(5)
     pgids = c.get_active_pgids()
     print ("Currently used pgids: {0}".format(pgids))
-#    time.sleep(1)
-
 #    c.wait_on_traffic(ports = [rx_port])
     stats = c.get_pgid_stats(pgids['latency'])
     global_lat_stats = stats['latency']
@@ -212,7 +209,6 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
 		lat_s2=lat_stats_s2['latency']['average']
 		lat_stats_s3 = global_lat_stats.get(7)
 		lat_s3=lat_stats_s3['latency']['average']
-#		rows  = [[lat_s1],[lat_s2],[lat_s3]]
                 rows  = [lat_s1, lat_s2, lat_s3]
 		writer.writerow(rows)
 	else:
@@ -245,18 +241,16 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
             range_end = range_start + pow(10, (len(str(range_start))-1))
         val = hist[sample]
         print (" Packets with latency between {0} and {1}:{2} ".format(range_start, range_end, val))
-#    time.sleep(5)
     return True
 
 #Run test
-#number_of_tests=0
 packet_len = 1
 
 if test=="var_pkt_size":
 	for index in pkt_size:
 		print "Test for packet size :", index,"Bytes"
 		number_of_tests=0
-		while(number_of_tests < 50):
+		while(number_of_tests < 25):
 			run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
 			number_of_tests+=1
 
@@ -264,7 +258,7 @@ if test=="var_pps_pkt_size_dist":
         for index in pps:
                 print "Test for varying pps (pkt size dist) :", index,"K"
          	number_of_tests=0
-         	while(number_of_tests < 50):
+         	while(number_of_tests < 25):
                 	run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = pkt_size_dist)
                 	number_of_tests+=1
 
@@ -272,14 +266,16 @@ if test=="var_pps":
         for index in pps:
                 print "Test for varying pps :", index,"K"
                 number_of_tests=0
-                while(number_of_tests < 50):
-                        run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+                while(number_of_tests < 25):
+                        run_test(tx_port = 0, rx_port = 1, pps = 1, test = test, direction = direction, var = index, dist = 0)
                         number_of_tests+=1
 
 if test=="var_flow":
         for index in flows:
                 print "Test for varying flows :", index
-                number_of_tests=0
-                while(number_of_tests < 50):
-                        run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
-                        number_of_tests+=1
+		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions) ")
+		if cont == "yes":
+                	number_of_tests=0
+                	while(number_of_tests < 25):
+                        	run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+                        	number_of_tests+=1
