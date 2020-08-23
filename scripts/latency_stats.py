@@ -12,13 +12,13 @@ pkt_size = [100, 256, 512, 1024, 1280, 1536, 1790]
 
 ########	Test2: var_pps = Varying pps (Fixed per test)
 pps = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
-
+pps = [1150]
 ########        Test3: var_pps_pkt_size_dist  = Varying pps (Distributed per test -> 20% low(100Byte), 60% medium(1024Byte), 20% high(1536Byte))
-pps = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
+pps_dist = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
 pkt_size_dist = [100, 1024, 1536]
 
 ########	Test4: var_flow = Varying flow (Fixed per test)
-flows = [20, 30, 40, 50]
+flows = [10, 20, 30, 40, 50]
 
 ########	Test5: var_flow_dist = Varying flow
 #flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
@@ -130,8 +130,6 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
 ##############################################
 	if test == "var_flow":
 	        print "Number of flows", var
-#		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions)") 
-#		if cont == "yes":
 		pkt /= 'x' * 914
 		print("Length of the packet after padding",len(pkt))
 		print "#####  Test3 = Varying flow (Fixed per test)#####"
@@ -250,12 +248,13 @@ if test=="var_pkt_size":
 	for index in pkt_size:
 		print "Test for packet size :", index,"Bytes"
 		number_of_tests=0
-		while(number_of_tests < 25):
+		while(number_of_tests < 15):
 			run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
 			number_of_tests+=1
+#			time.sleep(10)
 
 if test=="var_pps_pkt_size_dist":
-        for index in pps:
+        for index in pps_dist:
                 print "Test for varying pps (pkt size dist) :", index,"K"
          	number_of_tests=0
          	while(number_of_tests < 25):
@@ -267,15 +266,19 @@ if test=="var_pps":
                 print "Test for varying pps :", index,"K"
                 number_of_tests=0
                 while(number_of_tests < 25):
-                        run_test(tx_port = 0, rx_port = 1, pps = 1, test = test, direction = direction, var = index, dist = 0)
+                        run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
                         number_of_tests+=1
 
 if test=="var_flow":
         for index in flows:
                 print "Test for varying flows :", index
+		if direction == "uplink":
+			pps = 600000 # 4.91 Gbps max tput
+		if direction == "downlink":
+			pps = 750000 # 6.14 Gbps max tput
 		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions) ")
 		if cont == "yes":
                 	number_of_tests=0
                 	while(number_of_tests < 25):
-                        	run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+                        	run_test(tx_port = 0, rx_port = 1, pps = pps, test = test, direction = direction, var = index, dist = 0)
                         	number_of_tests+=1
