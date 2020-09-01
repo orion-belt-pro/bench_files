@@ -4,33 +4,37 @@ import pprint
 from scapy.contrib.gtp import *
 from trex_stl_lib.api import *
 import csv
+import os
 log_path=""
+
+#rx_pps_tot_s1 = []
+#rx_bps_tot_s1 = [] 
+drops_tot = []
+#tx_pps_tot_s1 = []
 
 # defalt PPS 400K, Pkt size 1024
 ########	Test1: var_pkt_size = Varying packet size (Fixed per test)
 pkt_size = [100, 256, 512, 1024, 1280, 1536, 1790, 2000]
-#pkt_size = [2000]
-
+pkt_size = [2000]
 ########	Test2: var_pps = Varying pps (Fixed per test)
-pps = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
+pps = [1, 10, 100, 200, 400, 600, 800, 1000, 1150] # Kilo pps
 
 ########        Test3: var_pps_pkt_size_dist  = Varying pps (Distributed per test -> 20% low(100Byte), 60% medium(1024Byte), 20% high(1536Byte))
 pps_dist = [1, 10, 100, 200, 400, 600, 800, 1000] # Kilo pps
 pkt_size_dist = [100, 1024, 1536]
-#pps = [10] # Kilo pps 
+
 ########	Test4: var_flow = Varying flow (Fixed per test)
 flows = [10, 20, 30, 40, 50]
 
-########	Test5: var_flow_dist = Varying flow
-#flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
-
-########        Test5: LBO
-#flows = [10, 30, 50] # Flow distribution for pkt size 100, 1024 &nd 1536 respt.
-
 ########       Direction = uplink or downlink
 
+#test="var_pkt_size"
 test="var_flow"
-direction="uplink"
+#test="var_pps" 
+#test="var_pps_pkt_size_dist"
+direction="downlink"
+#direction="uplink"
+#direction="bypass_vpp"
 
 def run_test (tx_port, rx_port, pps, test, direction, var, dist):
     # create client
@@ -65,14 +69,18 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
         	pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.105")/UDP(dport=2152)/GTP_U_Header(teid=1234)/IP(src="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
                 vm = vm_dst
 		log_path="ul"
-	else:
+	if direction == "downlink":
                 print("Downlink test") 
 #       	downlink packet 
 #        	pkt = Ether()/IP(src="172.20.16.55",dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
-                pkt = Ether()/IP(dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
+                pkt = Ether()/IP(dst="10.10.10.10",version=4)/UDP()/'at_least_16_bytes_payload_needed'
 		vm = vm_src
 		log_path ="dl"
 		pkt /= 'x' * 36 # This padding is done to make uplink and downlink packet of same size for comparison (TBD)
+        if direction == "bypass_vpp":
+		pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.55",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed' 
+		vm = []
+		log_path="ul"
         print("Length of the packet",len(pkt))
 
 ##############################################
@@ -112,8 +120,7 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
                        		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 7),
                        		mode = STLTXCont(pps=var*0.2*1000))
-        	print("S3: Length of the packet",len(pkt))
-		print("pps", var*0.2*1000, var*0.6*1000)
+        	print("Stream3: Length of the packet",len(pkt))
 	        streams = [s1, s2, s3]
 
 ##############################################
@@ -174,19 +181,28 @@ def run_test (tx_port, rx_port, pps, test, direction, var, dist):
 def Average(lst):
     return sum(lst) / len(lst)
 
+def clear_fifo_err_counter():
+    print"resetting dpdk interface"
+    time.sleep(5)
+    os.system('ssh rohan@10.192.103.53 "./reset_fifo"')
+    time.sleep(5)
+
 # RX one iteration
 def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
+    start = time.time()
     c.clear_stats()
     c.start(ports = [tx_port])
 #    time.sleep(5)
     pgids = c.get_active_pgids()
     print ("Currently used pgids: {0}".format(pgids))
-
+    
     rx_bps_tot_s1 = []
+    tx_pps_tot_s1 = []
+    rx_pps_tot_s1 = []
     rx_bps_tot_s2 = []
     rx_bps_tot_s3 = []
     for i in range(1,6):
-        time.sleep(1)
+        time.sleep(2)
         stats = c.get_pgid_stats(pgids['latency'])
         flow_stats = stats['flow_stats'].get(5)
         rx_pps = flow_stats['rx_pps'][rx_port]
@@ -194,6 +210,8 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
         rx_bps = flow_stats['rx_bps'][rx_port]
         tx_bps = flow_stats['tx_bps'][tx_port]
         rx_bps_tot_s1.append(rx_bps)
+        tx_pps_tot_s1.append(tx_pps)
+        rx_pps_tot_s1.append(rx_pps)
         print("rx_pps:{0} tx_pps:{1}, rx_bps:{2}, tx_bps:{3}"
               .format(rx_pps, tx_pps, rx_bps, tx_bps));
         if test == "var_pps_pkt_size_dist":
@@ -205,13 +223,14 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
 		 rx_bps_tot_s3.append(rx_bps_s3)
 
     rx_bps_avg_s1 = Average(rx_bps_tot_s1)*0.000001
+    stats = c.get_pgid_stats(pgids['latency'])
+    global_lat_stats = stats['latency'] 
+    drops = global_lat_stats.get(5)['err_cntrs']['dropped']
+    end = time.time()
+    print "test duration", end-start," Sec"
+    print"Total tx packets = {0}, Total rx packets = {1}, Total dropped packets = {2}".format(Average(tx_pps_tot_s1)*(end-start), Average(rx_pps_tot_s1)*(end-start), drops)
     print"Avg Throughput= ",rx_bps_avg_s1 ," Mbps"
 
-    stats = c.get_pgid_stats(pgids['latency'])
-    global_lat_stats = stats['latency']
-
-    drops = global_lat_stats.get(5)['err_cntrs']['dropped']
-    print"dropped packets ",drops
 
 #    c.wait_on_traffic(ports = [rx_port])
 
@@ -235,41 +254,55 @@ def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
 
 #Run test
 packet_len = 1
+if direction=="uplink":
+        tx_port=0
+        rx_port=1
+if direction=="downlink":
+        tx_port=1
+        rx_port=0
+print"Sending on port : ",tx_port
 
+start=time.time()
 if test=="var_pkt_size":
 	for index in pkt_size:
+		clear_fifo_err_counter()
 		print "Test for packet size :", index,"Bytes"
 		number_of_tests=0
-		while(number_of_tests < 25):
-			run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+		while(number_of_tests < 10):
+			run_test(tx_port = tx_port, rx_port = rx_port, pps = 600000, test = test, direction = direction, var = index, dist = 0)
 			number_of_tests+=1
+	        clear_fifo_err_counter()
 
 if test=="var_pps_pkt_size_dist":
         for index in pps_dist:
+                clear_fifo_err_counter()
                 print "Test for varying pps (pkt size dist) :", index,"K"
          	number_of_tests=0
-         	while(number_of_tests < 25):
-                	run_test(tx_port = 0, rx_port = 1, pps = 400000, test = test, direction = direction, var = index, dist = pkt_size_dist)
+         	while(number_of_tests < 10):
+                	run_test(tx_port = tx_port, rx_port = rx_port, pps = 600000, test = test, direction = direction, var = index, dist = pkt_size_dist)
                 	number_of_tests+=1
 
 if test=="var_pps":
         for index in pps:
+		clear_fifo_err_counter() 
                 print "Test for varying pps :", index,"K"
                 number_of_tests=0
-                while(number_of_tests < 25):
-                        run_test(tx_port = 0, rx_port = 1, pps = 1, test = test, direction = direction, var = index, dist = 0)
+                while(number_of_tests < 3):
+                        run_test(tx_port = tx_port, rx_port = rx_port, pps = 600000, test = test, direction = direction, var = index, dist = 0)
                         number_of_tests+=1
 
 if test=="var_flow":
         for index in flows:
+#		clear_fifo_err_counter()
                 print "Test for varying flows :", index
 		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions) ")
-                if direction == "uplink":
-                        pps = 600000 # 4.91 Gbps max tput
-                if direction == "downlink":
-                        pps = 750000 # 6.14 Gbps max tput
 		if cont == "yes":
                 	number_of_tests=0
-                	while(number_of_tests < 25):
-                        	run_test(tx_port = 0, rx_port = 1, pps = pps, test = test, direction = direction, var = index, dist = 0)
+                	while(number_of_tests < 10):
+                        	run_test(tx_port = tx_port, rx_port = rx_port, pps = 6000000, test = test, direction = direction, var = index, dist = 0)
                         	number_of_tests+=1
+                clear_fifo_err_counter()
+
+
+end=time.time()
+print"Test duration = ",end-start," Sec"

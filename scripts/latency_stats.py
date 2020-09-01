@@ -1,31 +1,43 @@
-#import stl_path
 from trex.stl.api import *
 import time
 import pprint
 from scapy.contrib.gtp import *
 from trex_stl_lib.api import *
 import csv
+log_path=""
 
-def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
+# defalt PPS 400K, Pkt size 1024
+########	Test1: var_pkt_size = Varying packet size (Fixed per test)
+pkt_size = [100, 256, 512, 1024, 1280, 1536, 1790, 2046, 2500, 3000]
+#pkt_size = [3000] # This is quick test
+########	Test2: var_pps = Varying pps (Fixed per test)
+pps = [1, 10, 100, 200, 400, 600, 800, 1000, 1150] # Kilo pps
+
+########        Test3: var_pps_pkt_size_dist  = Varying pps (Distributed per test -> 20% low(100Byte), 60% medium(1024Byte), 20% high(1536Byte))
+pps_dist = [1, 10, 100, 400, 800, 1000] # Kilo pps
+pkt_size_dist = [100, 1024, 1536]
+
+########	Test4: var_flow = Varying flow (Fixed per test)
+flows = [10, 20, 30, 40, 50]
+
+########       Direction = uplink or downlink
+
+test="var_pkt_size"
+#test="var_pps"
+#test="var_pps_pkt_size_dist"
+#test="var_flow"
+#direction="uplink"
+direction="downlink"
+#direction="bypass_vpp"
+
+number_of_test = 10
+
+def run_test (tx_port, rx_port, pps, test, direction, var, dist):
     # create client
     c = STLClient()
     passed = True
-    direction = ""
-    test = ""
     streams = []
-
     try:
-	"""
-#       Test1 = Varying packet size (Fixed per test)
-#       Test2 = Varying packet size (Distributed per test -> 20% low(100Byte), 60% medium(1024Byte), 20% high(1536Byte))
-#       Test3 = Varying pps (Fixed per test)
-#       Test4 = Varying flow (Fixed per test)
-
-#       Direction = uplink or downlink 
-	"""
-        test="Test1"
-        direction="uplink"
-
         vm_src = STLScVmRaw([STLVmFlowVar(name="ip_src",
                            min_value="8.8.8.1",
                            max_value="8.8.8.10",
@@ -34,77 +46,106 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
                            STLVmFixIpv4(offset = "IP"),
                            ])
 
+	max_value="8.8.8.10"
+	if test =="var_flow":
+		max_value="8.8.8."+str(var)
+	print"Value of max dst_addr",max_value
         vm_dst = STLScVmRaw([STLVmFlowVar(name="ip_dst",
                            min_value="8.8.8.1",
-                           max_value="8.8.8.10",
+                           max_value=max_value,
                          size=4, op="inc"),
                            STLVmWrFlowVar(fv_name="ip_dst", pkt_offset= "IP:1.dst"),
                            STLVmFixIpv4(offset = "IP:1"),
                            ])
-	test="Test1"
-        direction="uplink"
 
-        if direction == "uplink": 
+        if direction == "uplink":
+		print("Uplink test")
 #		uplink gtp packet
 #        	pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.105")/UDP(dport=2152)/GTP_U_Header(teid=1234)/IP(src="10.10.10.10",dst="172.20.16.55",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
         	pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.105")/UDP(dport=2152)/GTP_U_Header(teid=1234)/IP(src="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
                 vm = vm_dst
-	else:
+		log_path="ul"
+	if direction == "downlink":
+                print("Downlink test") 
 #       	downlink packet 
 #        	pkt = Ether()/IP(src="172.20.16.55",dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
                 pkt = Ether()/IP(dst="10.10.10.10",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
 		vm = vm_src
-		pkt /= 'x' * 36
-        total_pkts = burst_size
-        print("Length of the packet",len(pkt))
-        pkt /= 'x' * packet_len
-	packet = STLPktBuilder(pkt =pkt, vm=vm)
-        print("Length of the packet after padding",len(pkt))
+#                vm = []
+		log_path ="dl"
+		pkt /= 'x' * 36 # This padding is done to make uplink and downlink packet of same size for comparison (TBD)
+        if direction == "bypass_vpp":
+                pkt = Ether()/IP(src="172.20.16.99",dst="172.20.16.55",version=4,id=0xFFFF)/UDP()/'at_least_16_bytes_payload_needed'
+                vm = []
+                log_path="ul"
+	print("Length of the packet",len(pkt)) 
 
-	if test == "Test1":
-		print(" ##### Test 1 : Varying packet size (fixed per test) #####")
+##############################################
+	if test == "var_pkt_size":
+		pkt /= 'x' * (var-len(pkt))
+		print("Length of the packet after padding",len(pkt))
+		packet = STLPktBuilder(pkt =pkt, vm = vm)
+		print "##### Test 1 : Varying packet size (fixed per test)#####"
         	s1 = STLStream(name = 'stram1',
                 		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 5),
-                       		mode = STLTXCont(pps=pps)) 
-                streams = [s1] 
+                       		mode = STLTXCont(pps=pps))
+                streams = [s1]
 
-	if test == "Test2":
-        	print(" ##### Test 2 : Varying packet size (distribution) #####")  
+##############################################
+	if test == "var_pps_pkt_size_dist":
+        	print "##### Test 3 : Varying packet size (distribution)#####"
+		pkt /= 'x' * (dist[0]-len(pkt))
+		packet = STLPktBuilder(pkt =pkt, vm = vm)
         	s1 = STLStream(name = 'stram1',
                        		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 5),
-                       		mode = STLTXCont(pps=pps*0.2))
+                       		mode = STLTXCont(pps=var*0.2*1000))
                 print("Stream1: Length of the packet",len(pkt))
 
-        	pkt /= 'x' * 914
+        	pkt /= 'x' * (dist[1]-len(pkt))  
         	packet = STLPktBuilder(pkt =pkt, vm= vm)
         	s2 = STLStream(name = 'stream2',
                        		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 6),
-                       		mode = STLTXCont(pps=pps*0.6))
+                       		mode = STLTXCont(pps=var*0.6*1000))
         	print("Stream2: Length of the packet",len(pkt))
 
-        	pkt /= 'x' * 512
+        	pkt /= 'x' * (dist[2]-len(pkt))
         	packet = STLPktBuilder(pkt =pkt, vm= vm)
         	s3 = STLStream(name = 'stream3',
                        		packet = packet,
                        		flow_stats = STLFlowLatencyStats(pg_id = 7),
-                       		mode = STLTXCont(pps=pps*0.2))
+                       		mode = STLTXCont(pps=var*0.2*1000))
 
         	print("S3: Length of the packet",len(pkt))
 	        streams = [s1, s2, s3]
-	"""
-#      Test 4 : Varying packet flow (distribution)
-	pkt /= 'x' * packet_len
-        packet = STLPktBuilder(pkt =pkt, vm = vm)
-        s4 = STLStream(name = 'stram4',
-                       packet = packet,
-                       flow_stats = STLFlowLatencyStats(pg_id =  5),
-                       mode = STLTXCont(pps=pps))
-#                      mode = STLTXSingleBurst(total_pkts = total_pkts,
-#                                              pps = pps))
-	"""
+
+##############################################
+        if test == "var_pps":
+		pkt /= 'x' * 914
+		print("Length of the packet after padding",len(pkt))
+		packet = STLPktBuilder(pkt =pkt, vm = vm)
+		print "#####  Test3 = Varying pps (Fixed per test)#####"
+                s1 = STLStream(name = 'stram1',
+                                packet = packet,
+                                flow_stats = STLFlowLatencyStats(pg_id = 5),
+				mode = STLTXCont(pps=var*1000))
+                streams = [s1]
+
+##############################################
+	if test == "var_flow":
+	        print "Number of flows", var
+		pkt /= 'x' * 914
+		print("Length of the packet after padding",len(pkt))
+		print "#####  Test3 = Varying flow (Fixed per test)#####"
+		packet = STLPktBuilder(pkt =pkt, vm = vm)
+                s4 = STLStream(name = 'stram4',
+                               packet = packet,
+                               flow_stats = STLFlowLatencyStats(pg_id =  5),
+                               mode = STLTXCont(pps=pps))
+		streams = [s4]
+##############################################
 
         # connect to server
         c.connect()
@@ -114,12 +155,15 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
         print("\nInjecting packets \n")
         c.add_streams(streams, ports = [tx_port])
         print("All strams: Length of the packet", packet.get_pkt_len())
+	rc = get_stats(c, tx_port, rx_port, packet.get_pkt_len(), test, var, log_path)
+	"""
 	i=0
 	while(i<4):
-		rc = rx_iteration(c, tx_port, rx_port, total_pkts, packet.get_pkt_len())
+		rc = rx_iteration(c, tx_port, rx_port, packet.get_pkt_len())
         	if not rc:
             		passed = False
 		i+=1
+	"""
     except STLError as e:
         passed = False
         print(e)
@@ -133,14 +177,20 @@ def rx_example (tx_port, rx_port, burst_size, pps, packet_len):
 def Average(lst):
     return sum(lst) / len(lst) 
 
+def clear_fifo_err_counter():
+    print"resetting dpdk interface"
+    time.sleep(5) # wait to get all tx/rx get finished
+    os.system('ssh rohan@10.192.103.53 "./reset_fifo"')
+    time.sleep(5) # wait few moment after restting interface
+
 # RX one iteration
-def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
+def get_stats (c, tx_port, rx_port, pkt_len, test, var, path):
+    start=time.time() 
     c.clear_stats()
     c.start(ports = [tx_port])
+    time.sleep(5)
     pgids = c.get_active_pgids()
     print ("Currently used pgids: {0}".format(pgids))
-    time.sleep(1)
-
 #    c.wait_on_traffic(ports = [rx_port])
     stats = c.get_pgid_stats(pgids['latency'])
     global_lat_stats = stats['latency']
@@ -161,20 +211,19 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
     last_max = lat['last_max']
     hist = lat ['histogram']
 
-    """
-    lat_stats_s1 = global_lat_stats.get(5)      
-    lat_s1=lat_stats_s1['latency']['average']    
-    lat_stats_s2 = global_lat_stats.get(6) 
-    lat_s2=lat_stats_s2['latency']['average']
-    lat_stats_s3 = global_lat_stats.get(7) 
-    lat_s3=lat_stats_s3['latency']['average']
-    """
-
-    with open("/home/rohan/bench/bench_files/logs/latency/dl/latency.csv", "a") as f:    
-#        rows   = [[lat_s1],[lat_s2],[lat_s3]] 
+    with open("/home/rohan/bench/bench_files/logs/latency/"+path+"/"+test+"_"+str(var)+".csv", "a") as f:
     	writer = csv.writer(f)
-        writer.writerow([avg])
-#        writer.writerow(rows)
+        if test == "var_pps_pkt_size_dist":
+		lat_stats_s1 = global_lat_stats.get(5)
+		lat_s1=lat_stats_s1['latency']['average']
+		lat_stats_s2 = global_lat_stats.get(6)
+		lat_s2=lat_stats_s2['latency']['average']
+		lat_stats_s3 = global_lat_stats.get(7)
+		lat_s3=lat_stats_s3['latency']['average']
+                rows  = [lat_s1, lat_s2, lat_s3]
+		writer.writerow(rows)
+	else:
+        	writer.writerow([avg])
         f.close()
 
     if c.get_warnings():
@@ -182,7 +231,6 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
             for w in c.get_warnings():
                 print(w)
             return False
-#    print('Error counters: dropped:{0}, ooo:{1} dup:{2} seq too high:{3} seq too low:{4}'.format(drops, ooo, dup, sth, stl))
     if old_flow:
         print ('Packets arriving too late after flow stopped: {0}'.format(old_flow))
     if bad_hdr:
@@ -196,6 +244,7 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
     print(" Latency distribution histogram:")
     l = hist.keys()
     l.sort()
+    total_packets = []
     for sample in l:
         range_start = sample
         if range_start == 0:
@@ -204,16 +253,67 @@ def rx_iteration (c, tx_port, rx_port, total_pkts, pkt_len):
             range_end = range_start + pow(10, (len(str(range_start))-1))
         val = hist[sample]
         print (" Packets with latency between {0} and {1}:{2} ".format(range_start, range_end, val))
-    time.sleep(5)
+        total_packets.append(val)
+    print"Tatal number of packets per test= ",sum(total_packets) 
+    end=time.time()
+    print"Test duration = ",end-start," Sec" 
+#    exit()  #  This exit for for end on single test
     return True
 
 #Run test
-i=0
 packet_len = 1
-#while(i<1):
-#        print("Iteration :- ", i)
-#	rx_example(tx_port = 0, rx_port = 1, burst_size = 1000, pps = 400000, packet_len = 1426)
-#        i+=1
+number_of_tests =0
+if direction=="uplink"  or "bypass_vpp":
+	tx_port=0
+	rx_port=1
+if direction=="downlink":
+	tx_port=1
+	rx_port=0
 
-rx_example(tx_port = 0, rx_port = 1, burst_size = 1000, pps = 400000, packet_len = 1426)
 
+print"Sending on port : ",tx_port
+start=time.time()
+if test=="var_pkt_size":
+	for index in pkt_size:
+#		clear_fifo_err_counter()
+		print "Test for packet size :", index,"Bytes"
+                number_of_tests =0
+		while(number_of_tests < number_of_test/2):
+			run_test(tx_port = tx_port, rx_port = rx_port, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+			number_of_tests+=1
+
+if test=="var_pps_pkt_size_dist":
+        for index in pps_dist:
+		clear_fifo_err_counter()
+                print "Test for varying pps (pkt size dist) :", index,"K"
+         	number_of_tests=0
+         	while(number_of_tests < number_of_test /2):
+                	run_test(tx_port = tx_port, rx_port = rx_port, pps = 400000, test = test, direction = direction, var = index, dist = pkt_size_dist)
+                	number_of_tests+=1
+
+if test=="var_pps":
+        for index in pps:
+		clear_fifo_err_counter()
+                print "Test for varying pps :", index,"K"
+                number_of_tests=0
+                while(number_of_tests < number_of_test/2):
+                        run_test(tx_port = tx_port, rx_port = rx_port, pps = 400000, test = test, direction = direction, var = index, dist = 0)
+                        number_of_tests+=1
+
+if test=="var_flow":
+        for index in flows:
+		clear_fifo_err_counter()
+                print "Test for varying flows :", index
+		if direction == "uplink":
+			pps = 800000
+		if direction == "downlink":
+			pps = 800000
+		cont = raw_input("Continue : yes/no  ? (Make sure number of PFCP sessions) ")
+		if cont == "yes":
+                	number_of_tests=0
+                	while(number_of_tests < number_of_test/2):
+                        	run_test(tx_port = tx_port, rx_port = rx_port, pps = pps, test = test, direction = direction, var = index, dist = 0)
+                        	number_of_tests+=1
+
+end=time.time()
+print"Test duration = ",end-start," Sec"
